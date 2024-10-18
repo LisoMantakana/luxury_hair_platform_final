@@ -1,38 +1,47 @@
 package za.ac.cput.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
+import jakarta.persistence.*;
 import java.util.Objects;
+
 @Entity
 public class Address {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
-    private int houseNumber;
+
     private String streetName;
+    private String province;
     private String city;
     private int zipCode;
 
+    // Many Addresses can belong to one UserLogin
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false) // Specify the foreign key column
+    private UserLogin userLogin; // Foreign key relationship to UserLogin
+
     public Address() {
     }
-    public Address(Builder builder){
+
+    public Address(Builder builder) {
         this.addressId = builder.addressId;
-        this.houseNumber = builder.houseNumber;
         this.streetName = builder.streetName;
+        this.province = builder.province;
         this.city = builder.city;
         this.zipCode = builder.zipCode;
+        this.userLogin = builder.userLogin; // Set the userLogin
     }
 
     public Long getAddressId() {
         return addressId;
     }
 
-    public int getHouseNumber() {
-        return houseNumber;
-    }
-
     public String getStreetName() {
         return streetName;
+    }
+
+    public String getProvince() {
+        return province;
     }
 
     public String getCity() {
@@ -43,49 +52,60 @@ public class Address {
         return zipCode;
     }
 
+    public UserLogin getUserLogin() {
+        return userLogin; // Getter for UserLogin (userId)
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Address address = (Address) o;
-        return houseNumber == address.houseNumber && zipCode == address.zipCode && Objects.equals(addressId, address.addressId) && Objects.equals(streetName, address.streetName) && Objects.equals(city, address.city);
+        return zipCode == address.zipCode &&
+                Objects.equals(addressId, address.addressId) &&
+                Objects.equals(streetName, address.streetName) &&
+                Objects.equals(province, address.province) &&
+                Objects.equals(city, address.city) &&
+                Objects.equals(userLogin, address.userLogin); // Include userLogin in equals
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(addressId, houseNumber, streetName, city, zipCode);
+        return Objects.hash(addressId, streetName, province, city, zipCode, userLogin); // Include userLogin in hashCode
     }
 
     @Override
     public String toString() {
-        return "AddressFactory{" +
+        return "Address{" +
                 "addressId=" + addressId +
-                ", houseNumber=" + houseNumber +
                 ", streetName='" + streetName + '\'' +
+                ", province='" + province + '\'' +
                 ", city='" + city + '\'' +
                 ", zipCode=" + zipCode +
+                ", userLogin=" + userLogin + // Include userLogin in toString
                 '}';
     }
 
-    public static class Builder{
+    public static class Builder {
         private Long addressId;
-        private int houseNumber;
         private String streetName;
+        private String province;
         private String city;
         private int zipCode;
+        private UserLogin userLogin; // Add userLogin to the builder
 
         public Builder setAddressId(Long addressId) {
             this.addressId = addressId;
             return this;
         }
 
-        public Builder setHouseNumber(int houseNumber) {
-            this.houseNumber = houseNumber;
+        public Builder setStreetName(String streetName) {
+            this.streetName = streetName;
             return this;
         }
 
-        public Builder setStreetName(String streetName) {
-            this.streetName = streetName;
+        public Builder setProvince(String province) {
+            this.province = province;
             return this;
         }
 
@@ -99,15 +119,22 @@ public class Address {
             return this;
         }
 
-        public Builder copy(Address address){
-            this.addressId = address.addressId;
-            this.houseNumber = address.houseNumber;
-            this.streetName = address.streetName;
-            this.city = address.city;
-            this.zipCode = address.zipCode;
+        public Builder setUserLogin(UserLogin userLogin) { // Setter for UserLogin
+            this.userLogin = userLogin;
             return this;
         }
-        public Address build(){
+
+        public Builder copy(Address address) {
+            this.addressId = address.addressId;
+            this.streetName = address.streetName;
+            this.province = address.province;
+            this.city = address.city;
+            this.zipCode = address.zipCode;
+            this.userLogin = address.userLogin; // Copy userLogin
+            return this;
+        }
+
+        public Address build() {
             return new Address(this);
         }
     }
