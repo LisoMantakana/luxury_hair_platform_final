@@ -18,18 +18,20 @@ class AddressServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Include userId (e.g., 1001L) in the Address creation
-        address = AddressFactory.buildAdd(22341L, 1001L, "Corsair Way", "Western Cape", "Cape Town", 7765);
+        address = AddressFactory.buildAdd(22341L, "Corsair Way", "Western Cape", "Cape Town", 7765);
     }
 
     @Test
     @Order(1)
     void create() {
-        Address created = service.create(address);
-        assertNotNull(created);
-        assertEquals(address.getAddressId(), created.getAddressId());
-        assertEquals(address.getUserLogin(), created.getUserLogin()); // Validate userId
-        System.out.println("Created: " + created);
+        Address add = service.create(address);
+        assertNotNull(add);
+        assertEquals(address.getAddressId(), add.getAddressId());
+        assertEquals(address.getStreetName(), add.getStreetName());
+        assertEquals(address.getProvince(), add.getProvince());
+        assertEquals(address.getCity(), add.getCity());
+        assertEquals(address.getZipCode(), add.getZipCode());
+        System.out.println("Added: " + add);
     }
 
     @Test
@@ -38,14 +40,13 @@ class AddressServiceTest {
         Address read = service.read(address.getAddressId());
         assertNotNull(read);
         assertEquals(address.getAddressId(), read.getAddressId());
-        assertEquals(address.getUserLogin(), read.getUserLogin()); // Validate userId on read
-        System.out.println("Read: " + read);
+        System.out.println(read);
     }
 
     @Test
     @Order(3)
     void update() {
-        // Update address and validate userId remains unchanged
+        // Updated the Address instance without houseNumber
         Address updatedAddress = new Address.Builder()
                 .copy(address)
                 .setStreetName("Updated Corsair Way") // Update with new street name
@@ -53,13 +54,12 @@ class AddressServiceTest {
         Address updated = service.update(updatedAddress);
         assertNotNull(updated);
         assertEquals("Updated Corsair Way", updated.getStreetName());
-        assertEquals(address.getUserLogin(), updated.getUserLogin()); // Ensure userId remains consistent
-        System.out.println("Updated: " + updated);
+        System.out.println(updated);
     }
 
     @Test
     @Order(4)
-    void getall() {
-        System.out.println("All addresses: " + service.getall());
+    void getAll() {
+        System.out.println(service.getAll());
     }
 }

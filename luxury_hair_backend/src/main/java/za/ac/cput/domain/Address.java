@@ -1,24 +1,22 @@
 package za.ac.cput.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.util.Objects;
 
 @Entity
 public class Address {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
 
     private String streetName;
-    private String province;
     private String city;
+    private String province;
     private int zipCode;
-
-    // Many Addresses can belong to one UserLogin
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) // Specify the foreign key column
-    private UserLogin userLogin; // Foreign key relationship to UserLogin
 
     public Address() {
     }
@@ -29,7 +27,6 @@ public class Address {
         this.province = builder.province;
         this.city = builder.city;
         this.zipCode = builder.zipCode;
-        this.userLogin = builder.userLogin; // Set the userLogin
     }
 
     public Long getAddressId() {
@@ -52,10 +49,6 @@ public class Address {
         return zipCode;
     }
 
-    public UserLogin getUserLogin() {
-        return userLogin; // Getter for UserLogin (userId)
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,13 +58,12 @@ public class Address {
                 Objects.equals(addressId, address.addressId) &&
                 Objects.equals(streetName, address.streetName) &&
                 Objects.equals(province, address.province) &&
-                Objects.equals(city, address.city) &&
-                Objects.equals(userLogin, address.userLogin); // Include userLogin in equals
+                Objects.equals(city, address.city);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(addressId, streetName, province, city, zipCode, userLogin); // Include userLogin in hashCode
+        return Objects.hash(addressId, streetName, province, city, zipCode);
     }
 
     @Override
@@ -82,7 +74,6 @@ public class Address {
                 ", province='" + province + '\'' +
                 ", city='" + city + '\'' +
                 ", zipCode=" + zipCode +
-                ", userLogin=" + userLogin + // Include userLogin in toString
                 '}';
     }
 
@@ -92,7 +83,6 @@ public class Address {
         private String province;
         private String city;
         private int zipCode;
-        private UserLogin userLogin; // Add userLogin to the builder
 
         public Builder setAddressId(Long addressId) {
             this.addressId = addressId;
@@ -119,18 +109,12 @@ public class Address {
             return this;
         }
 
-        public Builder setUserLogin(UserLogin userLogin) { // Setter for UserLogin
-            this.userLogin = userLogin;
-            return this;
-        }
-
         public Builder copy(Address address) {
             this.addressId = address.addressId;
             this.streetName = address.streetName;
             this.province = address.province;
             this.city = address.city;
             this.zipCode = address.zipCode;
-            this.userLogin = address.userLogin; // Copy userLogin
             return this;
         }
 

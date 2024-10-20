@@ -19,28 +19,24 @@ public class AddressService implements IAddressService {
     }
 
     @Override
-    public List<Address> getall() {
-        return repository.findAll();  // Return all addresses as a list
+    public List<Address> getAll() {
+        return repository.findAll();
     }
 
     @Override
     public Address create(Address address) {
-        return repository.save(address);  // Save new address
+        return repository.save(address);
     }
 
     @Override
     public Address read(Long id) {
         Optional<Address> address = repository.findById(id);
-        return address.orElse(null);  // Return address if present
+        return address.orElse(null);
     }
 
     @Override
     public Address update(Address address) {
-        return repository.save(address);  // Update address if exists
+        return null;
     }
 
-    @Override
-    public Optional<Address> findByUserId(Long userId) {
-        return repository.findByUserId(userId);  // Assuming repository method exists for fetching by userId
-    }
 }

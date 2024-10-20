@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// eslint-disable-next-line no-unused-vars
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -6,64 +7,39 @@ import Footer from "../components/Footer";
 
 const ShippingPage = () => {
     const [street, setStreet] = useState("");
-    const [city, setCity] = useState("");
     const [province, setProvince] = useState("");
+    const [city, setCity] = useState("");
     const [zipCode, setZipCode] = useState("");
-    const [addressId, setAddressId] = useState(null); 
-    const navigate = useNavigate();
-    const userId = 1; 
 
-    useEffect(() => {
-        console.log("UserId:", userId); 
-      
-        const fetchAddress = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8080/LuxuryHairVendingSystemDB/address/user_login/${userId}`);
-                if (response.data) {
-                    const { streetName, city, province, zipCode, addressId } = response.data;
-                    setStreet(streetName);
-                    setCity(city);
-                    setProvince(province);
-                    setZipCode(zipCode);
-                    setAddressId(addressId);
-                }
-            } catch (error) {
-    
-                console.error("Error fetching the user's address:", error.message);
-                console.error("Axios error config:", error.config);
-                console.error("Axios error request:", error.request);
-                console.error("Axios error response:", error.response);
-            }
-        };
-       
-        
-        fetchAddress();
-    }, [userId]);
+    const navigate = useNavigate();
 
     const handleSubmit = async () => {
         try {
-            const data = {
+            console.log("Submitting:", {
                 streetName: street,
-                city,
                 province,
+                city,
                 zipCode,
-            };
+            });
 
-            if (addressId) {
-              
-                await axios.put(`http://localhost:8080/LuxuryHairVendingSystemDB/address/update/${addressId}`, data);
-                alert("Address updated successfully!");
-            } else {
-               
-                await axios.post('http://localhost:8080/LuxuryHairVendingSystemDB/address/create', data);
-                alert("Shipping details submitted successfully!");
-            }
+            await axios.post("http://localhost:8080/LuxuryHairVendingSystemDB/address/create", {
+                streetName: street,
+                province,
+                city,
+                zipCode,
+            });
 
-            navigate("/checkout");
+            alert("Shipping details submitted successfully!");
+
+            navigate("/checkout-complete");
         } catch (error) {
             console.error("Error submitting shipping details:", error);
             alert("Failed to submit shipping details.");
         }
+    };
+
+    const handleBackToCart = () => {
+        navigate("/cart");
     };
 
     return (
@@ -81,7 +57,7 @@ const ShippingPage = () => {
                 }}
             >
                 <div style={{ marginBottom: "20px" }}>
-                    <h3>{addressId ? "Edit Shipping Address" : "Shipping Address"}</h3>
+                    <h3>Shipping Address</h3>
                     <div style={{ display: "flex", gap: "10px" }}>
                         <label style={{ flex: 1 }}>
                             Street:
@@ -162,7 +138,24 @@ const ShippingPage = () => {
                                 borderRadius: "4px",
                             }}
                         >
-                            {addressId ? "Update Address" : "Checkout"}
+                            Checkout
+                        </button>
+                    </div>
+                </div>
+                <div style={{ marginBottom: "20px" }}>
+                    <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                        <button
+                            onClick={handleBackToCart}
+                            style={{
+                                flex: 1,
+                                padding: "10px",
+                                backgroundColor: "#666",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "4px",
+                            }}
+                        >
+                            Back to Cart
                         </button>
                     </div>
                 </div>
